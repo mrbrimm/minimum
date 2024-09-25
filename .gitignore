@@ -1,0 +1,8 @@
+node_modules
+node_modules
+.env
+.env.local
+.env.production.local
+.next
+.vercel
+.env*.local

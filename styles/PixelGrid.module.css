@@ -1,0 +1,26 @@
+.rectangle {
+  /* existing styles */
+  position: relative;
+  overflow: hidden;
+}
+
+.purchased {
+  /* existing styles */
+  background-size: cover;
+  background-position: center;
+}
+
+.linkTitle {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 2px;
+  font-size: 10px;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

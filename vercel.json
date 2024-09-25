@@ -1,0 +1,6 @@
+{
+    "installCommand": "yarn install && yarn global add prisma"
+    
+  }
+
+  

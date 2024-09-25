@@ -1,0 +1,88 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model PixelGroup {
+  id         Int         @id @default(autoincrement())
+  rectangles Rectangle[]
+  target_url String?
+  user_id    Int         @default(6)
+  user       User        @relation(fields: [user_id], references: [id])
+  link_title String?
+  image_url  String? // Add this line
+  purchases  Purchase[]
+  created_at DateTime    @default(now())
+  updated_at DateTime    @updatedAt
+  approved   Boolean     @default(false) // Add this line
+  status     String      @default("Pending Payment")
+}
+
+model Purchase {
+  id                    Int         @id @default(autoincrement())
+  user_id               Int
+  user                  User        @relation(fields: [user_id], references: [id])
+  image_url             String?
+  billing_address       String
+  billing_state         String
+  billing_zip           String
+  credit_card_last_four String
+  target_url            String?
+  link_title            String?
+  rectangle_count       Int
+  amount_paid           Int
+  created_at            DateTime    @default(now())
+  updated_at            DateTime    @updatedAt
+  pixelGroup            PixelGroup  @relation(fields: [pixelGroupId], references: [id])
+  pixelGroupId          Int         @default(1)
+  rectangles            Rectangle[]
+  status                String      @default("Pending Payment")
+  terms                 Boolean     @default(false)
+
+  @@unique([user_id, created_at])
+}
+
+model Rectangle {
+  id           Int         @id @default(autoincrement())
+  rect_row     Int
+  col          Int
+  purchased    Boolean     @default(false)
+  user_id      Int         @default(6)
+  user         User        @relation(fields: [user_id], references: [id])
+  purchase_id  Int?
+  purchase     Purchase?   @relation(fields: [purchase_id], references: [id])
+  pixelGroup   PixelGroup? @relation(fields: [pixelGroupId], references: [id])
+  pixelGroupId Int?
+  status       String      @default("Pending Payment")
+
+  @@unique([rect_row, col])
+}
+
+model User {
+  id             Int             @id @default(autoincrement())
+  email          String          @unique
+  password       String
+  isAdmin        Boolean         @default(false)
+  created_at     DateTime        @default(now())
+  updated_at     DateTime        @updatedAt
+  purchases      Purchase[]
+  rectangles     Rectangle[]
+  pixelGroups    PixelGroup[]
+  passwordResets PasswordReset[]
+}
+
+model PasswordReset {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  expiresAt DateTime
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  createdAt DateTime @default(now())
+}
